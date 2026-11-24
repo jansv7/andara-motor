@@ -2,8 +2,308 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --color-brand: #C81E1E;
+    --color-brand-hover: #A31616;
+    --color-ink: #111318;
+    --color-ink-soft: #1B1F27;
+    --color-muted: #525866;
+    --color-line: #E4E7EC;
+    --color-surface: #F6F7F9;
+    --color-wa: #15803D;
+    --color-wa-hover: #166534;
+}
+
+@layer base {
+    html {
+        color: var(--color-ink);
+        background-color: #ffffff;
+        scroll-padding-top: 6rem;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    a[href],
+    button:not(:disabled),
+    summary,
+    select:not(:disabled),
+    label[for],
+    input[type='checkbox']:not(:disabled),
+    input[type='radio']:not(:disabled) {
+        cursor: pointer;
+    }
+
+    button:disabled,
+    input:disabled,
+    select:disabled,
+    textarea:disabled {
+        cursor: not-allowed;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-brand);
+        outline-offset: 2px;
+    }
+
+    .bg-ink :focus-visible,
+    .bg-ink-soft :focus-visible,
+    footer :focus-visible {
+        outline-color: #ffffff;
+    }
+
+    input:not([type='checkbox']):not([type='radio']):not([type='file']),
+    select,
+    textarea {
+        font: inherit;
+        font-size: max(1rem, 1em);
+        min-height: 44px;
+    }
+
+    select {
+        display: inline-block;
+        padding-right: 2rem;
+    }
+
+    input:user-invalid,
+    select:user-invalid,
+    textarea:user-invalid {
+        border-color: var(--color-brand);
+    }
+}
+
+.skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -999px;
+    z-index: 60;
+    background: var(--color-ink);
+    color: #ffffff;
+    padding: 0.65rem 1rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-radius: 4px;
+}
+
+.skip-link:focus {
+    top: 0.75rem;
+}
+
+.tabular-nums {
+    font-variant-numeric: tabular-nums;
+}
+
+@layer components {
+    .btn-primary,
+    .btn-secondary,
+    .btn-wa,
+    .btn-dark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-height: 44px;
+        padding: 0.625rem 1.25rem;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        line-height: 1.2;
+        border-radius: 6px;
+        white-space: nowrap;
+        transition: transform 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            background-color 140ms ease,
+            border-color 140ms ease,
+            color 140ms ease;
+    }
+
+    .btn-primary {
+        background-color: var(--color-brand);
+        color: #ffffff;
+        border: 1px solid var(--color-brand);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--color-brand-hover);
+        border-color: var(--color-brand-hover);
+    }
+
+    .btn-secondary {
+        background-color: #ffffff;
+        color: var(--color-ink);
+        border: 1px solid #cbd2dc;
+    }
+
+    .btn-secondary:hover {
+        background-color: var(--color-surface);
+        border-color: #9aa3b2;
+    }
+
+    .btn-dark {
+        background-color: var(--color-ink);
+        color: #ffffff;
+        border: 1px solid var(--color-ink);
+    }
+
+    .btn-dark:hover {
+        background-color: #262b36;
+    }
+
+    .btn-wa {
+        background-color: var(--color-wa);
+        color: #ffffff;
+        border: 1px solid var(--color-wa);
+    }
+
+    .btn-wa:hover {
+        background-color: var(--color-wa-hover);
+        border-color: var(--color-wa-hover);
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .btn-primary:hover,
+    .btn-secondary:hover,
+    .btn-wa:hover,
+    .btn-dark:hover {
+        transform: translateY(-1px);
+    }
+
+    .btn-primary:active,
+    .btn-secondary:active,
+    .btn-wa:active,
+    .btn-dark:active {
+        transform: translateY(1px) scale(0.985);
+    }
+
+    .unit-card {
+        transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            border-color 180ms ease,
+            box-shadow 180ms ease;
+    }
+
+    .unit-card:hover {
+        transform: translateY(-2px);
+        border-color: #b8c0cc;
+        box-shadow: 0 12px 24px -16px rgba(17, 19, 24, 0.22);
+    }
+
+    .unit-card .unit-photo {
+        transition: transform 550ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .unit-card:hover .unit-photo {
+        transform: scale(1.03);
+    }
+}
+
+.nav-link[aria-current='page'] {
+    color: #ffffff;
+    box-shadow: inset 0 -2px 0 0 var(--color-brand);
+}
+
+.owner-nav-link[aria-current='page'] {
+    background-color: #1f242e;
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: inset 3px 0 0 0 var(--color-brand);
+}
+
+/* Hero load entrance: runs once on load, never repeats on scroll */
+@keyframes heroRise {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-enter {
+    animation: heroRise 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-enter-delay {
+    animation: heroRise 650ms cubic-bezier(0.22, 1, 0.36, 1) 110ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-enter,
+    .hero-enter-delay {
+        animation: none;
+    }
+
+    .unit-card,
+    .unit-card .unit-photo,
+    .btn-primary,
+    .btn-secondary,
+    .btn-wa,
+    .btn-dark {
+        transition: none;
+        transform: none;
+    }
+}
+
+/* Responsive data table using container queries (modern-web-guidance: responsive-table) */
+.table-wrapper {
+    overflow: auto;
+    max-inline-size: 100%;
+    container-type: inline-size;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.data-table thead th {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+    background-color: var(--color-surface);
+}
+
+@container (width < 680px) {
+    .data-table--stack,
+    .data-table--stack thead,
+    .data-table--stack tbody,
+    .data-table--stack tr,
+    .data-table--stack th,
+    .data-table--stack td {
+        display: block;
+    }
+
+    .data-table--stack thead {
+        display: none;
+    }
+
+    .data-table--stack tbody tr {
+        margin-block-end: 0.875rem;
+        border: 1px solid var(--color-line);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 0.75rem;
+    }
+
+    .data-table--stack tbody td,
+    .data-table--stack tbody th {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.375rem 0;
+        border: 0;
+        text-align: right;
+    }
+
+    .data-table--stack tbody td::before,
+    .data-table--stack tbody th::before {
+        content: attr(data-label);
+        font-weight: 600;
+        font-size: 0.75rem;
+        color: var(--color-muted);
+        text-align: left;
+    }
 }
