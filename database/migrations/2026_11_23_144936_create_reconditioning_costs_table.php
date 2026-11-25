@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('reconditioning_costs', function (Blueprint $table): void {
+            $table->id();
+            $table->foreignId('motorcycle_id')->constrained('motorcycles')->cascadeOnDelete();
+            $table->string('description', 150);
+            $table->decimal('amount', 12, 0);
+            $table->date('cost_date');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('reconditioning_costs');
+    }
+};
